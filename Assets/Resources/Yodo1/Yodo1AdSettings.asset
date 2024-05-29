@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   androidSettings:
     AppKey: MXSyokMb9e
-    AdmobAppID: 
+    AdmobAppID: ca-app-pub-5580537606944457~2605570663
     BundleID: 
     GooglePlayStore: 1
     ChineseAndroidStores: 0

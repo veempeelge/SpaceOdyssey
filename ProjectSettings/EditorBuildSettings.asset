@@ -14,6 +14,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game Over.unity
     guid: c083c36661523224b937517eef7ed9c3
+  - enabled: 0
+    path: Assets/Yodo1/MAS/Sample/Yodo1AdsScene.unity
+    guid: 9aa5866e47649407fb066afebf56e4c9
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 0645b7e0bb4618640a0ad354c1c17ae5, type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: 7389b14c8748e4158ab93fb56a434a49, type: 2}

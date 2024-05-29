@@ -1,6 +1,6 @@
 <dependencies>
   <packages>
-    <package>com.yodo1.mas:full:4.11.0</package>
+    <package>com.yodo1.mas:full:4.12.0</package>
   </packages>
   <files />
   <settings>
@@ -8,8 +8,8 @@
     <setting name="bundleId" value="com.Mario.ARProject" />
     <setting name="explodeAars" value="True" />
     <setting name="gradleBuildEnabled" value="True" />
-    <setting name="gradlePropertiesTemplateEnabled" value="False" />
-    <setting name="gradleTemplateEnabled" value="False" />
+    <setting name="gradlePropertiesTemplateEnabled" value="True" />
+    <setting name="gradleTemplateEnabled" value="True" />
     <setting name="installAndroidPackages" value="True" />
     <setting name="localMavenRepoDir" value="Assets/GeneratedLocalRepo" />
     <setting name="packageDir" value="Assets/Plugins/Android" />

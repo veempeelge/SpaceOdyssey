@@ -33,33 +33,19 @@ namespace Yodo1.MAS
                 Yodo1AdSettings settings = Yodo1AdSettingsSave.Load();
                 if (Yodo1AdSettingsSave.CheckConfiguration_iOS(settings))
                 {
-                    var podVersion = Yodo1AdCommandLine.Run("pod", "--version", pathToBuiltProject);
-                    if (podVersion.ExitCode == 0)
-                    {
-                        var podResult = Yodo1AdCommandLine.Run("pod", "install --repo-update", pathToBuiltProject);
-                        if (podResult != null)
-                        {
-                            if (podResult.ExitCode != 0)
-                            {
-                                Yodo1AdCommandLine.Run("pod", "install", pathToBuiltProject);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //Debug.LogWarning(Yodo1U3dMas.TAG + "Cocoapods is not installed, " + podVersion.StandardOutput + "," + podVersion.StandardError);
-                    }
-
                     UpdateIOSPlist(pathToBuiltProject, settings);
                     UpdateIOSProject(pathToBuiltProject);
-
+                    UpdatePodfile(pathToBuiltProject);
                     //if (Yodo1AdUtils.IsAppLovinValid())
                     //{
                     //    EnableAdReview(pathToBuiltProject);
                     //}
+                    CheckAndPodInstall(pathToBuiltProject);
                 }
             }
         }
+
+        #region SkAdNetworksInfo
 
         private static Yodo1SkAdNetworkData GetSkAdNetworkData()
         {
@@ -98,147 +84,43 @@ namespace Yodo1.MAS
             }
         }
 
+        private static string[] GetSkAdNetworksFromLocal()
+        {
+            string[] applovinSkIDs = GetSkAdNetworksIDs("sk_ad_networks_info.plist");
+            string[] bigoSkIDs = GetSkAdNetworksIDs("sk_ad_networks_info_bigo.plist");
+
+            string[] skIDs = applovinSkIDs.Union(bigoSkIDs).ToArray<string>(); //Merge arrays and remove duplicates
+            return skIDs;
+        }
+
+        private static string[] GetSkAdNetworksIDs(string fileName)
+        {
+            string path = Application.dataPath + "/Yodo1/MAS/Editor/Resources";
+            string plistPath = Path.Combine(path, fileName);
+            PlistDocument plist = new PlistDocument();
+            plist.ReadFromString(File.ReadAllText(plistPath));
+            //Get Root
+            PlistElementDict rootDict = plist.root;
+            PlistElementArray skItems = (PlistElementArray)rootDict["SKAdNetworkItems"];
+            if (skItems == null)
+            {
+                return null;
+            }
+            List<PlistElement> list = skItems.values;
+            string[] mSKAdNetworkIDs = new string[list.Count];
+            for (int i = 0; i < list.Count; i++)
+            {
+                PlistElementDict skItem = (PlistElementDict)list[i];
+                PlistElementString skAdNetworkIdentifier = (PlistElementString)skItem["SKAdNetworkIdentifier"];
+                mSKAdNetworkIDs[i] = skAdNetworkIdentifier.value;
+            }
+            return mSKAdNetworkIDs;
+        }
+
+        #endregion
+
         private static void UpdateIOSPlist(string path, Yodo1AdSettings settings)
         {
-            string[] mSKAdNetworkId = new string[] {
-                "22mmun2rn5.skadnetwork",
-                "2fnua5tdw4.skadnetwork",
-                "2u9pt9hc89.skadnetwork",
-                "3qcr597p9d.skadnetwork",
-                "3qy4746246.skadnetwork",
-                "3rd42ekr43.skadnetwork",
-                "3sh42y64q3.skadnetwork",
-                "424m5254lk.skadnetwork",
-                "4468km3ulz.skadnetwork",
-                "47vhws6wlr.skadnetwork",
-                "4dzt52r2t5.skadnetwork",
-                "4fzdc2evr5.skadnetwork",
-                "4pfyvq9l8r.skadnetwork",
-                "578prtvx9j.skadnetwork",
-                "5a6flpkh64.skadnetwork",
-                "7ug5zh24hu.skadnetwork",
-                "8c4e2ghe7u.skadnetwork",
-                "8s468mfl3y.skadnetwork",
-                "9rd848q2bz.skadnetwork",
-                "9t245vhmpl.skadnetwork",
-                "a2p9lx4jpn.skadnetwork",
-                "av6w8kgt66.skadnetwork",
-                "c6k4g5qg8m.skadnetwork",
-                "cp8zw746q7.skadnetwork",
-                "cstr6suwn9.skadnetwork",
-                "e5fvkxwrpn.skadnetwork",
-                "ecpz2srf59.skadnetwork",
-                "f38h382jlk.skadnetwork",
-                "gta9lk7p23.skadnetwork",
-                "hs6bdukanm.skadnetwork",
-                "kbd757ywx3.skadnetwork",
-                "klf5c3l5u5.skadnetwork",
-                "ludvb6z3bs.skadnetwork",
-                "mlmmfzh3r3.skadnetwork",
-                "n38lu8286q.skadnetwork",
-                "n6fk4nfna4.skadnetwork",
-                "p78axxw29g.skadnetwork",
-                "ppxm28t8ap.skadnetwork",
-                "prcb7njmu6.skadnetwork",
-                "s39g8k73mm.skadnetwork",
-                "t38b2kh725.skadnetwork",
-                "uw77j35x4d.skadnetwork",
-                "v4nxqhlyqp.skadnetwork",
-                "v72qych5uu.skadnetwork",
-                "v9wttpbfk9.skadnetwork",
-                "wzmmz9fp6w.skadnetwork",
-                "y5ghdn5j9k.skadnetwork",
-                "yclnxrl5pm.skadnetwork",
-                "ydx93a7ass.skadnetwork",
-                "zq492l623r.skadnetwork",
-                "24t9a8vw3c.skadnetwork",
-                "275upjj5gd.skadnetwork",
-                "294l99pt4k.skadnetwork",
-                "32z4fx6l9h.skadnetwork",
-                "3l6bd9hu43.skadnetwork",
-                "523jb4fst2.skadnetwork",
-                "52fl2v3hgk.skadnetwork",
-                "54nzkqm89y.skadnetwork",
-                "5l3tpt7t6e.skadnetwork",
-                "5lm9lj6jb7.skadnetwork",
-                "5tjdwbrq8w.skadnetwork",
-                "6g9af3uyq4.skadnetwork",
-                "6xzpu9s2p8.skadnetwork",
-                "79pbpufp6p.skadnetwork",
-                "7rz58n8ntl.skadnetwork",
-                "8r8llnkz5a.skadnetwork",
-                "9b89h5y424.skadnetwork",
-                "9nlqeag3gk.skadnetwork",
-                "9yg77x724h.skadnetwork",
-                "a8cz6cu7e5.skadnetwork",
-                "c3frkrj4fj.skadnetwork",
-                "cg4yq2srnc.skadnetwork",
-                "cj5566h2ga.skadnetwork",
-                "dbu4b84rxf.skadnetwork",
-                "dkc879ngq3.skadnetwork",
-                "ejvt5qm6ak.skadnetwork",
-                "feyaarzu9v.skadnetwork",
-                "g28c52eehv.skadnetwork",
-                "ggvn48r87g.skadnetwork",
-                "glqzh8vgby.skadnetwork",
-                "k674qkevps.skadnetwork",
-                "kbmxgpxpgc.skadnetwork",
-                "m5mvw97r93.skadnetwork",
-                "m8dbw4sv7c.skadnetwork",
-                "mtkv5xtk9e.skadnetwork",
-                "n66cz3y3bx.skadnetwork",
-                "n9x2a789qt.skadnetwork",
-                "nzq8sh4pbs.skadnetwork",
-                "pwa73g5rt2.skadnetwork",
-                "qqp299437r.skadnetwork",
-                "r45fhb6rf7.skadnetwork",
-                "rvh3l7un93.skadnetwork",
-                "tl55sbb4fm.skadnetwork",
-                "vcra2ehyfk.skadnetwork",
-                "wg4vff78zm.skadnetwork",
-                "x44k69ngh6.skadnetwork",
-                "x5l83yy675.skadnetwork",
-                "x8jxxk4ff5.skadnetwork",
-                "x8uqf25wch.skadnetwork",
-                "xy9t38ct57.skadnetwork",
-                "zmvfpc5aq8.skadnetwork",
-                "252b5q8x7y.skadnetwork",
-                "44jx6755aq.skadnetwork",
-                "9g2aggbj52.skadnetwork",
-                "dzg6xy7pwj.skadnetwork",
-                "f73kdq92p3.skadnetwork",
-                "hdw39hrw9y.skadnetwork",
-                "krvm3zuq6h.skadnetwork",
-                "rx5hdcabgc.skadnetwork",
-                "t6d3zquu66.skadnetwork",
-                "y45688jllp.skadnetwork",
-                "74b6s63p6l.skadnetwork",
-                "97r2b46745.skadnetwork",
-                "b9bk5wbcq9.skadnetwork",
-                "mls7yz5dvl.skadnetwork",
-                "w9q455wk68.skadnetwork",
-                "su67r6k2v3.skadnetwork",
-                "737z793b9f.skadnetwork",
-                "238da6jt44.skadnetwork",
-                "44n7hlldy6.skadnetwork",
-                "488r3q3dtq.skadnetwork",
-                "gvmwg8q7h5.skadnetwork",
-                "lr83yxwka7.skadnetwork",
-                "pu4na253f3.skadnetwork",
-                "u679fj5vs4.skadnetwork",
-                "v79kvwwj4g.skadnetwork",
-                "yrqqpx2mcb.skadnetwork",
-                "z4gj7hsk7h.skadnetwork",
-                "x2jnk7ly8j.skadnetwork",
-                "4w7y6s5ca2.skadnetwork",
-                "f7s53z58qe.skadnetwork",
-                "mp6xlyr22a.skadnetwork",
-                "7953jerfzd.skadnetwork",
-                "7fmhfwg9en.skadnetwork",
-                "qu637u8glc.skadnetwork"
-
-
-            };
             string plistPath = Path.Combine(path, "Info.plist");
             PlistDocument plist = new PlistDocument();
             plist.ReadFromString(File.ReadAllText(plistPath));
@@ -251,10 +133,16 @@ namespace Yodo1.MAS
             //Set SKAdNetwork
             PlistElementArray skItem = rootDict.CreateArray("SKAdNetworkItems");
             var skAdNetworkData = GetSkAdNetworkData();
+            var skAdNetworkLocal = GetSkAdNetworksFromLocal();
             var skAdNetworkIds = skAdNetworkData.SkAdNetworkIds;
             if (skAdNetworkIds == null || skAdNetworkIds.Length < 1)
             {
-                skAdNetworkIds = mSKAdNetworkId;
+                skAdNetworkIds = skAdNetworkLocal;
+            }
+            else
+            {
+                //Merge arrays and remove duplicates
+                skAdNetworkIds = skAdNetworkIds.Union(skAdNetworkLocal).ToArray<string>();
             }
             foreach (string skAdNetworkId in skAdNetworkIds)
             {
@@ -333,6 +221,17 @@ namespace Yodo1.MAS
             proj.SetBuildProperty(unityMainTargetGuid, "ENABLE_BITCODE", "NO");
             proj.SetBuildProperty(unityFrameworkTargetGuid, "ENABLE_BITCODE", "NO");
             proj.SetBuildProperty(unityFrameworkTargetGuid, "GCC_ENABLE_OBJC_EXCEPTIONS", "YES");
+
+            string MARKETING_VERSION = proj.GetBuildPropertyForConfig(unityMainTargetGuid, "MARKETING_VERSION");
+            if (string.IsNullOrEmpty(MARKETING_VERSION))
+            {
+                proj.SetBuildProperty(unityMainTargetGuid, "MARKETING_VERSION", Application.version);
+            }
+            MARKETING_VERSION = proj.GetBuildPropertyForConfig(unityFrameworkTargetGuid, "MARKETING_VERSION");
+            if (string.IsNullOrEmpty(MARKETING_VERSION))
+            {
+                proj.SetBuildProperty(unityFrameworkTargetGuid, "MARKETING_VERSION", Application.version);
+            }
 
             /// <summary>
             /// For Swift 5+ code that uses the standard libraries, the Swift Standard Libraries MUST be embedded for iOS < 12.2
@@ -567,6 +466,45 @@ namespace Yodo1.MAS
                 dynamicLibraryPathsToEmbed.Add(Path.Combine("Pods/", "Fyber_Marketplace_SDK/IASDKCore/IASDKCore.xcframework/ios-arm64/IASDKCore.framework"));
                 return dynamicLibraryPathsToEmbed;
             }
+        }
+
+        private static void CheckAndPodInstall(string path)
+        {
+            var podVersion = Yodo1AdCommandLine.Run("pod", "--version", path);
+            if (podVersion.ExitCode == 0)
+            {
+                var podResult = Yodo1AdCommandLine.Run("pod", "install --repo-update", path);
+                if (podResult != null)
+                {
+                    if (podResult.ExitCode != 0)
+                    {
+                        Yodo1AdCommandLine.Run("pod", "install", path);
+                    }
+                }
+            }
+            else
+            {
+                //Debug.LogWarning(Yodo1U3dMas.TAG + "Cocoapods is not installed, " + podVersion.StandardOutput + "," + podVersion.StandardError);
+            }
+        }
+
+        private static void UpdatePodfile(string path)
+        {
+            string topTag = "target 'UnityFramework' do";
+            string installer = "post_install do |installer|\n" +
+                "\tinstaller.generated_projects.each do |project|\n" +
+                "\t\tproject.targets.each do |target|\n" +
+                "\t\t\ttarget.build_configurations.each do |config|\n" +
+                "\t\t\t\tconfig.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'\n" +
+                "\t\t\tend\n" +
+                "\t\tend\n" +
+                "\tend\n" +
+                "end\n";
+
+            Debug.Log("=================== " + path + "/Podfile");
+
+            Yodo1AdFileClass app = new Yodo1AdFileClass(path + "/Podfile");
+            app.WriteBelow(topTag, installer);
         }
     }
 }

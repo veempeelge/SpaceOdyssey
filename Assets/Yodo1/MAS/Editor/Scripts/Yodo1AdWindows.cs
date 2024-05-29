@@ -295,28 +295,12 @@
                 return "Please enter the correct MAS App Key.";
             }
 
+            Dictionary<string, object> obj = Yodo1Net.GetInstance().GetAppInfoByAppKey(appKey);
             string result = string.Empty;
-            string api = "https://sdk.mas.yodo1.com/v1/unity/setup/" + appKey;
-#if UNITY_2018_1_OR_NEWER
-            string response = HttpGet(api);
-            Dictionary<string, object> obj = (Dictionary<string, object>)Yodo1JSON.Deserialize(response);
-            Debug.Log(Yodo1U3dMas.TAG + "response:" + response);
             if (!this.GetAdMobKey(obj))
             {
                 result = "MAS App Key not found. please fill in correctly.";
             }
-#else
-            ApiCallback callback = delegate (string response)
-            {
-                Dictionary<string, object> obj = (Dictionary<string, object>)Yodo1JSON.Deserialize(response);
-                Debug.Log(Yodo1U3dMas.TAG + "response:" + response);
-                if (!this.GetAdMobKey(obj))
-                {
-                    result = "MAS App Key not found. please fill in correctly.";
-                }
-            };
-            EditorCoroutineRunner.StartEditorCoroutine(SendUrl(api, callback));
-#endif
             return result;
         }
 
@@ -359,46 +343,5 @@
         }
 
         #endregion
-
-        private string HttpGet(string api)
-        {
-            try
-            {
-                string serviceAddress = api;
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(serviceAddress);
-                request.Method = "GET";
-                request.ContentType = "text/html;charset=UTF-8";
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream myResponseStream = response.GetResponseStream();
-                StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.UTF8);
-                string returnXml = myStreamReader.ReadToEnd();
-                myStreamReader.Close();
-                response.Close();
-                return returnXml;
-
-            }
-            catch (WebException e)
-            {
-                e.StackTrace.ToString();
-                return e.StackTrace.ToString();
-            }
-        }
-
-        private IEnumerator SendUrl(string url, ApiCallback callback)
-        {
-            using (UnityWebRequest www = new UnityWebRequest(url))
-            {
-                yield return www;
-                if (www.error != null)
-                {
-                    Debug.Log(Yodo1U3dMas.TAG + www.error);
-                    yield return null;
-                }
-                else
-                {
-                    callback(www.downloadHandler.text);
-                }
-            }
-        }
     }
 }

@@ -7,6 +7,6 @@
       <repository>https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea</repository>
       <repository>https://artifactory.bidmachine.io/bidmachine</repository>
     </repositories>
-    <androidPackage spec="com.yodo1.mas:full:4.11.0" />
+    <androidPackage spec="com.yodo1.mas:full:4.12.0" />
   </androidPackages>
 </dependencies>

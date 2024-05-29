@@ -9,14 +9,14 @@ public class StartGame : MonoBehaviour
 {
     [SerializeField] Button startButton;
     [SerializeField] Button restart;
-    [SerializeField] Button mainMenu;
+   // [SerializeField] Button mainMenu;
     
     // Start is called before the first frame update
     void Start()
     {
         startButton.onClick.AddListener(StartGameButton);
         restart.onClick.AddListener(RestartGame);
-        mainMenu.onClick.AddListener(MainMenu);
+       // mainMenu.onClick.AddListener(MainMenu);
 
     }
 
