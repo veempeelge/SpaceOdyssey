@@ -27,10 +27,22 @@ MonoBehaviour:
     GlobalRegion: 1
     AppLovinSdkKey: xcGD2fy-GdmiZQapx_kUSy5SMKyLoXBk8RyB5u9MVv34KetGdbl4XrXvAUFy0Qg9scKyVTI0NM4i_yzdXih4XE
   androidDynamicNetworkSettings:
-    sdkType: -1
-    sdkVersion: 
-    latestSdkVersion: 
-    networks: []
+    sdkType: 0
+    sdkVersion: 4.12.0
+    latestSdkVersion: 4.12.0
+    networks:
+    - APPLOVIN
+    - ADMOB
+    - IRONSOURCE
+    - bidmachine
+    - bigo
+    - facebook
+    - fyber
+    - inmobi
+    - mintegral
+    - pangle
+    - vungle
+    - yandex
   iosDynamicNetworkSettings:
     sdkType: -1
     sdkVersion: 
