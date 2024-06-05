@@ -29,7 +29,7 @@ public class Plane : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        PlayerPrefs.SetInt("StartScore", 0);
         planeAnimator.SetTrigger("Enter");
         _timer = 2f;
         _fireRateTimer = .8f;

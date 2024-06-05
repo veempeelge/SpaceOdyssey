@@ -4,19 +4,20 @@ using UnityEngine;
 using Yodo1.MAS;
 using System;
 using UnityEngine.UI;
+using UnityEditor.SearchService;
+using UnityEngine.SceneManagement;
+using System.Xml.Serialization;
 
-public class Ads : MonoBehaviour
+public class AdsContinue : MonoBehaviour
 {
     [SerializeField] Button getRewardButton;
     private int retryAttempt = 0;
     private Yodo1U3dRewardAd _yodoReward;
-    [SerializeField] GameObject rewardObtained;
-    string cooldown;
-    int cooldownNum;
+    private int scoreToRestart;
+   // [SerializeField] GameObject rewardObtained;
 
     private void Start()
     {
-        
         Yodo1MasUserPrivacyConfig userPrivacyConfig = new Yodo1MasUserPrivacyConfig()
             .titleBackgroundColor(Color.green)
             .titleTextColor(Color.blue)
@@ -38,14 +39,11 @@ public class Ads : MonoBehaviour
 
         SetupEventCallbacks();
         _yodoReward.LoadAd();
-        CheckCooldown();
-       // getRewardButton.interactable = false;
-
     }
 
     private void SetupEventCallbacks()
     {
-         _yodoReward.OnAdLoadFailedEvent += OnRewardAdLoadFailedEvent;
+        _yodoReward.OnAdLoadFailedEvent += OnRewardAdLoadFailedEvent;
         _yodoReward.OnAdOpenedEvent += OnRewardAdOpenedEvent;
         _yodoReward.OnAdOpenFailedEvent += OnRewardAdOpenFailedEvent;
         _yodoReward.OnAdClosedEvent += OnRewardAdClosedEvent;
@@ -55,9 +53,8 @@ public class Ads : MonoBehaviour
     private void LoadRewardAd()
     {
         Debug.Log("ad");
-        //getRewardButton.interactable = false;
-       
-
+        Cooldown();
+        getRewardButton.interactable = false;
         if (_yodoReward.IsLoaded())
             _yodoReward.ShowAd();
         else
@@ -96,55 +93,47 @@ public class Ads : MonoBehaviour
 
     private void OnRewardAdClosedEvent(Yodo1U3dRewardAd ad)
     {
-        // Code to be executed when the ad closed
-        //_yodoReward.LoadAd();
-        Debug.Log("User closed ad, cancel reward");
+        //// Code to be executed when the ad closed
+        ////_yodoReward.LoadAd();
+        //Debug.Log("User closed ad, cancel reward");
+        //scoreToRestart = 0;
+        //PlayerPrefs.SetInt("StartScore", 0);
     }
 
     private void OnRewardAdEarnedEvent(Yodo1U3dRewardAd ad)
     {
-        var nextAddTime = DateTime.Now.AddMinutes(.3f);
-        Cooldown(nextAddTime);
-        getRewardButton.interactable = false;
         // Code executed when getting rewards
-        rewardObtained.SetActive(true);
+        scoreToRestart =  PlayerPrefs.GetInt("EndScore");
+        PlayerPrefs.SetInt("StartScore", scoreToRestart);
+        
+
         Debug.Log("Reward earned");
-        CheckCooldown();
-
+        SceneManager.LoadScene("Game-1");
     }
-
-    private void Cooldown(DateTime AdCooldown)
+    
+    private void Cooldown()
     {
-        var dateTimeString = AdCooldown.ToString();
-       // cooldown = dateTimeString;
-        PlayerPrefs.SetString("RewardCooldown", dateTimeString);
-    }
+        var nextAddTime = DateTime.Now.AddMinutes(30);
 
-    private void CheckCooldown()
-    {
-        var parsedDateTime = DateTime.Parse(PlayerPrefs.GetString("RewardCooldown", DateTime.Now.ToString()));
+        var dateTimeString = nextAddTime.ToString();
 
-        var timeLeft = (parsedDateTime - DateTime.Now).TotalSeconds;
-
-        Debug.Log("Cooldown = " + timeLeft);
-        if (timeLeft <= 0)
+        if (DateTime.TryParse(dateTimeString, out var parsedDateTime))
         {
-            getRewardButton.interactable = true;
-        }
-        else
+            var timeLeft = (parsedDateTime - DateTime.Now).TotalSeconds;
 
-        {
-            getRewardButton.interactable = false;
-            StartCoroutine(DelayAdButton((int)timeLeft));
-            cooldownNum = (int)timeLeft;
-            Debug.Log(timeLeft);
+            if (timeLeft <= 0)
+            {
+
+            }
+            else
+            {
+                StartCoroutine(DelayAdButton((int)timeLeft));
+            }
         }
-       
     }
 
     private IEnumerator DelayAdButton(int timeLeft)
     {
-        Debug.Log("CooldownFinished");
         yield return new WaitForSeconds(timeLeft);
         getRewardButton.interactable = true;
     }

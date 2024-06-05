@@ -33,6 +33,15 @@ public class SpawnManager : MonoBehaviour
         InvokeRepeating(nameof(SpeedPowerUp), 0f, 20f);
         _spawnPos = transform.position; 
         _score = FindObjectOfType<Score>();
+        if (_score.CurrentScore <= 0f)
+        {
+            _enemySpawnRate = 6f;
+        }
+        if (_score.CurrentScore > 0)
+        {
+            _enemySpawnRate = 6f - (_score.CurrentScore / 500);
+        }
+        Debug.Log("StartLevel" + _enemySpawnRate);
 
     }
 

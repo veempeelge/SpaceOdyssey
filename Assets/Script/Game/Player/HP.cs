@@ -12,6 +12,8 @@ public class HP : MonoBehaviour
 
     [SerializeField] TMP_Text hpUi;
     [SerializeField] ParticleSystem HPParticle;
+    Score _score;
+
 
     // Start is called before the first frame update
     void Start()
@@ -22,23 +24,27 @@ public class HP : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_currentHP == 0)
-        {
-            Debug.Log("GameOver");
-            anim.SetTrigger("PlayerDead");
-        }
-        hpUi.SetText("HP = " + _currentHP);
+        
+       
 
     }
+
 
    public void GotHit(int amount)
     {
         _currentHP -= amount;
-        
+        hpUi.SetText("HP = " + _currentHP);
 
-        if(_currentHP > 0)
+        if (_currentHP > 0)
         {
             anim.SetTrigger("GotHit");
+        }
+
+        if (_currentHP == 0)
+        {
+            Debug.Log("GameOver");
+            anim.SetTrigger("PlayerDead");
+            PlayerPrefs.SetInt("EndScore", PlayerPrefs.GetInt("CurrentScore"));
         }
     }
 

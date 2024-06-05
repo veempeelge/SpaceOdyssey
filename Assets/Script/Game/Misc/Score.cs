@@ -17,6 +17,7 @@ public class Score : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _currentScore = PlayerPrefs.GetInt("StartScore");
         HighScoreSet();
     }
 
@@ -36,7 +37,7 @@ public class Score : MonoBehaviour
     public void AddScore(int amount)
     {
         _currentScore += amount;
-       
+        PlayerPrefs.SetInt("CurrentScore", CurrentScore);
     }
 
     void HighScore()
