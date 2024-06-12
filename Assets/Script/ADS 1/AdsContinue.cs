@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEditor.SearchService;
 using UnityEngine.SceneManagement;
 using System.Xml.Serialization;
+using TMPro;
 
 public class AdsContinue : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class AdsContinue : MonoBehaviour
     private int retryAttempt = 0;
     private Yodo1U3dRewardAd _yodoReward;
     private int scoreToRestart;
+    string cooldown;
+    int cooldownNum;
+    [SerializeField] TMP_Text cooldownTimerContinue;
    // [SerializeField] GameObject rewardObtained;
 
     private void Start()
@@ -39,6 +43,9 @@ public class AdsContinue : MonoBehaviour
 
         SetupEventCallbacks();
         _yodoReward.LoadAd();
+
+        CheckCooldown();
+    //    cooldownTimerContinue.gameObject.SetActive(false);
     }
 
     private void SetupEventCallbacks()
@@ -48,20 +55,6 @@ public class AdsContinue : MonoBehaviour
         _yodoReward.OnAdOpenFailedEvent += OnRewardAdOpenFailedEvent;
         _yodoReward.OnAdClosedEvent += OnRewardAdClosedEvent;
         _yodoReward.OnAdEarnedEvent += OnRewardAdEarnedEvent;
-    }
-
-    private void LoadRewardAd()
-    {
-        Debug.Log("ad");
-        Cooldown();
-        getRewardButton.interactable = false;
-        if (_yodoReward.IsLoaded())
-            _yodoReward.ShowAd();
-        else
-        {
-            _yodoReward.OnAdLoadedEvent += OnRewardAdLoadedEvent;
-            _yodoReward.LoadAd();
-        }
     }
 
     private void OnRewardAdLoadedEvent(Yodo1U3dRewardAd ad)
@@ -105,37 +98,81 @@ public class AdsContinue : MonoBehaviour
         // Code executed when getting rewards
         scoreToRestart =  PlayerPrefs.GetInt("EndScore");
         PlayerPrefs.SetInt("StartScore", scoreToRestart);
-        
-
+        var nextAdTime = DateTime.Now.AddMinutes(30f);
+        Cooldown(nextAdTime);
         Debug.Log("Reward earned");
+
         SceneManager.LoadScene("Game-1");
+        cooldownTimerContinue.gameObject.SetActive(true);
+        CheckCooldown();
     }
     
-    private void Cooldown()
-    {
-        var nextAddTime = DateTime.Now.AddMinutes(30);
-
-        var dateTimeString = nextAddTime.ToString();
-
-        if (DateTime.TryParse(dateTimeString, out var parsedDateTime))
-        {
-            var timeLeft = (parsedDateTime - DateTime.Now).TotalSeconds;
-
-            if (timeLeft <= 0)
-            {
-
-            }
-            else
-            {
-                StartCoroutine(DelayAdButton((int)timeLeft));
-            }
-        }
-    }
-
+ 
     private IEnumerator DelayAdButton(int timeLeft)
     {
         yield return new WaitForSeconds(timeLeft);
         getRewardButton.interactable = true;
+    }
+
+    private void Cooldown(DateTime adCooldown)
+    {
+        var dateTimeString = adCooldown.ToString();
+        PlayerPrefs.SetString("RewardCooldownContinue", dateTimeString);
+        StartCoroutine(UpdateCooldownTimer(adCooldown));
+    }
+
+    private void CheckCooldown()
+    {
+        var parsedDateTime = DateTime.Parse(PlayerPrefs.GetString("RewardCooldownContinue", DateTime.Now.ToString()));
+        var timeLeft = (parsedDateTime - DateTime.Now).TotalSeconds;
+
+        Debug.Log("Cooldown = " + timeLeft);
+        if (timeLeft <= 0)
+        {
+            getRewardButton.interactable = true;
+        }
+        else
+        {
+            getRewardButton.interactable = false;
+            StartCoroutine(DelayAdButton((int)timeLeft));
+            cooldownNum = (int)timeLeft;
+            Debug.Log(timeLeft);
+            StartCoroutine(UpdateCooldownTimer(parsedDateTime));
+            cooldownTimerContinue.gameObject.SetActive(true);
+
+        }
+    }
+
+    private IEnumerator UpdateCooldownTimer(DateTime endTime)
+    {
+        while (true)
+        {
+            var timeLeft = endTime - DateTime.Now;
+            if (timeLeft.TotalSeconds <= 0)
+            {
+                cooldownTimerContinue.SetText("00:00:00");
+                cooldownTimerContinue.gameObject.SetActive(false);
+                yield break;
+            }
+
+            cooldownTimerContinue.SetText(timeLeft.ToString(@"hh\:mm\:ss"));
+            yield return new WaitForSeconds(1);
+        }
+    }
+
+   
+
+    private void LoadRewardAd()
+    {
+        Debug.Log("ad");
+
+        if (_yodoReward.IsLoaded())
+            _yodoReward.ShowAd();
+        else
+        {
+            _yodoReward.OnAdLoadedEvent += OnRewardAdLoadedEvent;
+            _yodoReward.LoadAd();
+        }
     }
 }
 
