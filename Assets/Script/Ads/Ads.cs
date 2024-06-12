@@ -1,17 +1,20 @@
-using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using Yodo1.MAS;
+using System;
 using UnityEngine.UI;
 using TMPro;
-using Yodo1.MAS;
-
 
 public class Ads : MonoBehaviour
 {
-    [SerializeField] private Button getRewardButton;
+    [SerializeField] Button getRewardButton;
+    private int retryAttempt = 0;
     private Yodo1U3dRewardAd _yodoReward;
-    [SerializeField] private GameObject rewardObtained;
-    [SerializeField] private TMP_Text cooldownTimer;
+    [SerializeField] GameObject rewardObtained;
+    string cooldown;
+    int cooldownNum;
+    [SerializeField] TMP_Text cooldownTimer;
 
     private void Start()
     {
@@ -50,12 +53,10 @@ public class Ads : MonoBehaviour
 
     private void LoadRewardAd()
     {
-        Debug.Log("Ad is loading");
+        Debug.Log("ad");
 
         if (_yodoReward.IsLoaded())
-        {
             _yodoReward.ShowAd();
-        }
         else
         {
             _yodoReward.OnAdLoadedEvent += OnRewardAdLoadedEvent;
@@ -65,71 +66,65 @@ public class Ads : MonoBehaviour
 
     private void OnRewardAdLoadedEvent(Yodo1U3dRewardAd ad)
     {
+        Yodo1U3dRewardAd.GetInstance().ShowAd();
         _yodoReward.OnAdLoadedEvent -= OnRewardAdLoadedEvent;
-        _yodoReward.ShowAd();
     }
 
     private void OnRewardAdLoadFailedEvent(Yodo1U3dRewardAd ad, Yodo1U3dAdError adError)
     {
-        Debug.LogError($"Ad load failed: {adError}");
+        // Code to be executed when an ad request fails.
     }
 
     private void OnRewardAdOpenedEvent(Yodo1U3dRewardAd ad)
     {
-        Debug.Log("Ad opened");
+        // Code to be executed when an ad opened
     }
 
     private void OnRewardAdOpenFailedEvent(Yodo1U3dRewardAd ad, Yodo1U3dAdError adError)
     {
-        Debug.LogError($"Ad open failed: {adError}");
+        // Code to be executed when an ad open fails.
     }
 
     private void OnRewardAdClosedEvent(Yodo1U3dRewardAd ad)
     {
-        Debug.Log("Ad closed without reward");
+        Debug.Log("User closed ad, cancel reward");
     }
 
     private void OnRewardAdEarnedEvent(Yodo1U3dRewardAd ad)
     {
-        var nextAdTime = DateTime.Now.AddMinutes(2);
+        var nextAdTime = DateTime.Now.AddMinutes(0.3f);
         Cooldown(nextAdTime);
         getRewardButton.interactable = false;
         rewardObtained.SetActive(true);
         Debug.Log("Reward earned");
-        cooldownTimer.gameObject.SetActive(true);
         CheckCooldown();
         TimeManager.instance.EnergyReward();
     }
 
     private void Cooldown(DateTime adCooldown)
     {
-        PlayerPrefs.SetString("RewardCooldown", adCooldown.ToString());
-        PlayerPrefs.Save();
+        var dateTimeString = adCooldown.ToString();
+        PlayerPrefs.SetString("RewardCooldown", dateTimeString);
         StartCoroutine(UpdateCooldownTimer(adCooldown));
     }
 
     private void CheckCooldown()
     {
-        if (PlayerPrefs.HasKey("RewardCooldown"))
-        {
-            var parsedDateTime = DateTime.Parse(PlayerPrefs.GetString("RewardCooldown"));
-            var timeLeft = (parsedDateTime - DateTime.Now).TotalSeconds;
+        var parsedDateTime = DateTime.Parse(PlayerPrefs.GetString("RewardCooldown", DateTime.Now.ToString()));
+        var timeLeft = (parsedDateTime - DateTime.Now).TotalSeconds;
 
-            if (timeLeft <= 0)
-            {
-                getRewardButton.interactable = true;
-            }
-            else
-            {
-                getRewardButton.interactable = false;
-                StartCoroutine(DelayAdButton((int)timeLeft));
-                cooldownTimer.gameObject.SetActive(true);
-                StartCoroutine(UpdateCooldownTimer(parsedDateTime));
-            }
+        Debug.Log("Cooldown = " + timeLeft);
+        if (timeLeft <= 0)
+        {
+            getRewardButton.interactable = true;
         }
         else
         {
-            getRewardButton.interactable = true;
+            getRewardButton.interactable = false;
+            StartCoroutine(DelayAdButton((int)timeLeft));
+            cooldownNum = (int)timeLeft;
+            Debug.Log(timeLeft);
+            StartCoroutine(UpdateCooldownTimer(parsedDateTime));
         }
     }
 
@@ -147,7 +142,6 @@ public class Ads : MonoBehaviour
             if (timeLeft.TotalSeconds <= 0)
             {
                 cooldownTimer.SetText("00:00:00");
-                cooldownTimer.gameObject.SetActive(false);
                 yield break;
             }
 
