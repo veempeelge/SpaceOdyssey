@@ -99,7 +99,12 @@ public class Ads : MonoBehaviour
     {
         var nextAdTime = DateTime.Now.AddMinutes(0.1f);
         Cooldown(nextAdTime);
-        if (getRewardButton.gameObject != null)
+
+
+
+
+
+        if (getRewardButton.interactable == true)
         {
             getRewardButton.interactable = false;
         }

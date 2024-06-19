@@ -118,7 +118,11 @@ public class AdsContinue : MonoBehaviour
     {
         var dateTimeString = adCooldown.ToString();
         PlayerPrefs.SetString("RewardCooldownContinue", dateTimeString);
+        if(this != null)
         StartCoroutine(UpdateCooldownTimer(adCooldown));
+        else
+            return;
+        Debug.Log("ah");
     }
 
     private void CheckCooldown()
