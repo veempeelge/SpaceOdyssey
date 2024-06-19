@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using System;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class TimeManager : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class TimeManager : MonoBehaviour
     public int energy;
     public float timeToRecoverEnergy;
 
-    DateTime energySpendDateTime; //time/date when energy was spent
+    DateTime lastEnergySpendDateTime; // time/date when energy was last spent
     float timePassed;
 
     UpdateText updateTXT;
@@ -18,33 +19,35 @@ public class TimeManager : MonoBehaviour
 
     private void Awake()
     {
-        energy = PlayerPrefs.GetInt("energy", 5);
         instance = this;
+        energy = PlayerPrefs.GetInt("energy", maxEnergy);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-  
         updateTXT = FindObjectOfType<UpdateText>();
         LoadDate();
         StartCoroutine(EnergyRecoveryCoroutine());
         updateTXT.UpdateTextValue(energy);
     }
 
-    private void Update()
-    {
-        //Debug.Log(energy);
-    }
-
     public void SpendEnergy()
     {
+        //energy = PlayerPrefs.GetInt("energy", maxEnergy);
         if (energy > 0)
         {
             energy--;
-            energySpendDateTime = System.DateTime.Now;
+            SceneManager.LoadSceneAsync(1);
+            if (energy < maxEnergy)
+            {
+                if (lastEnergySpendDateTime == DateTime.MinValue)
+                {
+                    lastEnergySpendDateTime = DateTime.Now; // Only reset if not already set
+                }
+            }
             SaveData();
-            //TODO: PLAY GAME
+            // TODO: PLAY GAME
         }
         else
         {
@@ -54,16 +57,25 @@ public class TimeManager : MonoBehaviour
 
     public void RecoverEnergyWithTime()
     {
-        timePassed = (float)(System.DateTime.Now - energySpendDateTime).TotalSeconds;
+        if (lastEnergySpendDateTime == DateTime.MinValue)
+            return;
+
+        timePassed = (float)(DateTime.Now - lastEnergySpendDateTime).TotalSeconds;
 
         if (timePassed >= timeToRecoverEnergy)
         {
-            energy++;
-            energySpendDateTime = System.DateTime.Now;
+            int energyToRecover = Mathf.FloorToInt(timePassed / timeToRecoverEnergy);
+            energy += energyToRecover;
+            lastEnergySpendDateTime = DateTime.Now;
 
             if (energy >= maxEnergy)
             {
                 energy = maxEnergy;
+                lastEnergySpendDateTime = DateTime.MinValue; // Reset to initial state
+            }
+            else
+            {
+                lastEnergySpendDateTime = DateTime.Now.AddSeconds(-(timePassed % timeToRecoverEnergy)); // Keep track of remaining time for next recovery
             }
         }
     }
@@ -83,7 +95,7 @@ public class TimeManager : MonoBehaviour
     {
         if (energy < maxEnergy)
         {
-            float remainingTime = timeToRecoverEnergy - (float)(System.DateTime.Now - energySpendDateTime).TotalSeconds;
+            float remainingTime = timeToRecoverEnergy - (float)(DateTime.Now - lastEnergySpendDateTime).TotalSeconds;
             if (remainingTime < 0) remainingTime = 0;
 
             TimeSpan timeSpan = TimeSpan.FromSeconds(remainingTime);
@@ -98,38 +110,43 @@ public class TimeManager : MonoBehaviour
 
     public void RecoverEnergyOnGameLoad()
     {
-        timePassed = (float)(System.DateTime.Now - energySpendDateTime).TotalSeconds;
+        timePassed = (float)(DateTime.Now - lastEnergySpendDateTime).TotalSeconds;
 
         if (timePassed >= timeToRecoverEnergy)
         {
-            energy += Mathf.RoundToInt(timePassed / timeToRecoverEnergy);
+            int energyToRecover = Mathf.FloorToInt(timePassed / timeToRecoverEnergy);
+            energy += energyToRecover;
 
             if (energy >= maxEnergy)
             {
                 energy = maxEnergy;
+                lastEnergySpendDateTime = DateTime.MinValue; // Reset to initial state
+            }
+            else
+            {
+                lastEnergySpendDateTime = DateTime.Now.AddSeconds(-(timePassed % timeToRecoverEnergy)); // Keep track of remaining time for next recovery
             }
         }
-        energySpendDateTime = System.DateTime.Now;
     }
 
     public void SaveData()
     {
         PlayerPrefs.SetInt("energy", energy);
-        PlayerPrefs.SetString("energySpendDateTime", energySpendDateTime.ToString());
+        PlayerPrefs.SetString("lastEnergySpendDateTime", lastEnergySpendDateTime.ToString());
     }
 
     public void LoadDate()
     {
-        if (PlayerPrefs.HasKey("energySpendDateTime"))
+        if (PlayerPrefs.HasKey("lastEnergySpendDateTime"))
         {
-            energySpendDateTime = Convert.ToDateTime(PlayerPrefs.GetString("energySpendDateTime"));
+            lastEnergySpendDateTime = Convert.ToDateTime(PlayerPrefs.GetString("lastEnergySpendDateTime"));
             energy = PlayerPrefs.GetInt("energy");
             RecoverEnergyOnGameLoad();
         }
         else
         {
             energy = maxEnergy;
-            energySpendDateTime = System.DateTime.Now;
+            lastEnergySpendDateTime = DateTime.MinValue; // Initial state
         }
         updateTXT.UpdateTextValue(energy);
         UpdateTimerText();
@@ -142,6 +159,15 @@ public class TimeManager : MonoBehaviour
 
     public void EnergyReward()
     {
-        energy++;
+        if (energy < maxEnergy)
+        {
+            energy++;
+            if (energy == maxEnergy)
+            {
+                lastEnergySpendDateTime = DateTime.MinValue;
+            }
+            SaveData();
+         
+        }
     }
 }

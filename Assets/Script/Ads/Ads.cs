@@ -42,6 +42,11 @@ public class Ads : MonoBehaviour
         CheckCooldown();
     }
 
+    private void OnDestroy()
+    {
+        StopAllCoroutines();
+    }
+
     private void SetupEventCallbacks()
     {
         _yodoReward.OnAdLoadFailedEvent += OnRewardAdLoadFailedEvent;
@@ -92,20 +97,44 @@ public class Ads : MonoBehaviour
 
     private void OnRewardAdEarnedEvent(Yodo1U3dRewardAd ad)
     {
-        var nextAdTime = DateTime.Now.AddMinutes(0.3f);
+        var nextAdTime = DateTime.Now.AddMinutes(0.1f);
         Cooldown(nextAdTime);
-        getRewardButton.interactable = false;
-        rewardObtained.SetActive(true);
+        if (getRewardButton.gameObject != null)
+        {
+            getRewardButton.interactable = false;
+        }
+        else
+        {
+            Debug.Log("ButtonOff");
+        }
         Debug.Log("Reward earned");
         CheckCooldown();
         TimeManager.instance.EnergyReward();
+
+        if (rewardObtained != null)
+        {
+            rewardObtained.SetActive(true);
+
+        }
+        else
+        {
+            Debug.Log("Missing Panel");
+        }
+
     }
 
     private void Cooldown(DateTime adCooldown)
     {
         var dateTimeString = adCooldown.ToString();
         PlayerPrefs.SetString("RewardCooldown", dateTimeString);
-        StartCoroutine(UpdateCooldownTimer(adCooldown));
+        if (this == null)
+        {
+            Debug.Log("null");
+        }
+        else
+        {
+            StartCoroutine(UpdateCooldownTimer(adCooldown));
+        }
     }
 
     private void CheckCooldown()
@@ -121,7 +150,15 @@ public class Ads : MonoBehaviour
         else
         {
             getRewardButton.interactable = false;
-            StartCoroutine(DelayAdButton((int)timeLeft));
+            if (this != null)
+            {
+                StartCoroutine(DelayAdButton((int)timeLeft));
+            }
+            else
+            {
+
+            }
+            
             cooldownNum = (int)timeLeft;
             Debug.Log(timeLeft);
             StartCoroutine(UpdateCooldownTimer(parsedDateTime));
@@ -138,6 +175,24 @@ public class Ads : MonoBehaviour
     {
         while (true)
         {
+            if (gameObject == null)
+            {
+                Debug.LogWarning("Ads object is null. Exiting coroutine.");
+                yield break;
+            }
+
+            if (cooldownTimer == null)
+            {
+                Debug.LogWarning("cooldownTimer object is null. Exiting coroutine.");
+                yield break;
+            }
+
+            if (!gameObject.activeInHierarchy)
+            {
+                Debug.LogWarning("GameObject is not active in hierarchy. Exiting coroutine.");
+                yield break;
+            }
+
             var timeLeft = endTime - DateTime.Now;
             if (timeLeft.TotalSeconds <= 0)
             {

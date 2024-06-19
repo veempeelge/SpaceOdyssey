@@ -47,16 +47,9 @@ public class StartGame : MonoBehaviour
 
     void StartGameButton()
     {
-        if (planesCount > 0)
-        {
-            Debug.Log("Start" + planesCount);
-            SceneManager.LoadScene(1);
+            //Debug.Log("Start" + planesCount);
+            //SceneManager.LoadScene(1);
             TimeManager.instance.SpendEnergy();
-        }
-        else
-        {
-            Debug.Log("Plane is still recovering");
-        }
     }
 
 
