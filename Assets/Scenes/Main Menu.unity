@@ -1885,7 +1885,7 @@ MonoBehaviour:
   rewardObtained: {fileID: 2074719535}
   cooldownTimer: {fileID: 2103913450}
   plusPlanePanel: {fileID: 720559260}
-  exitGetReward: {fileID: 0}
+  exitGetReward: {fileID: 1275342391}
 --- !u!114 &1116108927
 MonoBehaviour:
   m_ObjectHideFlags: 0
