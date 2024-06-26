@@ -15,7 +15,8 @@ public class Ads : MonoBehaviour
     string cooldown;
     int cooldownNum;
     [SerializeField] TMP_Text cooldownTimer;
-
+    [SerializeField] GameObject plusPlanePanel;
+    [SerializeField] Button exitGetReward;
     private void Start()
     {
         Yodo1MasUserPrivacyConfig userPrivacyConfig = new Yodo1MasUserPrivacyConfig()
@@ -36,14 +37,20 @@ public class Ads : MonoBehaviour
         _yodoReward = Yodo1U3dRewardAd.GetInstance();
 
         getRewardButton.onClick.AddListener(LoadRewardAd);
-
+        exitGetReward.onClick.AddListener(ExitGetReward);
         SetupEventCallbacks();
         _yodoReward.LoadAd();
         CheckCooldown();
     }
 
+    private void ExitGetReward()
+    {
+       plusPlanePanel.gameObject.SetActive(false);
+    }
+
     private void OnDestroy()
     {
+        RemoveEventCallbacks();
         StopAllCoroutines();
     }
 
@@ -54,6 +61,15 @@ public class Ads : MonoBehaviour
         _yodoReward.OnAdOpenFailedEvent += OnRewardAdOpenFailedEvent;
         _yodoReward.OnAdClosedEvent += OnRewardAdClosedEvent;
         _yodoReward.OnAdEarnedEvent += OnRewardAdEarnedEvent;
+    }
+
+    private void RemoveEventCallbacks()
+    {
+        _yodoReward.OnAdLoadFailedEvent -= OnRewardAdLoadFailedEvent;
+        _yodoReward.OnAdOpenedEvent -= OnRewardAdOpenedEvent;
+        _yodoReward.OnAdOpenFailedEvent -= OnRewardAdOpenFailedEvent;
+        _yodoReward.OnAdClosedEvent -= OnRewardAdClosedEvent;
+        _yodoReward.OnAdEarnedEvent -= OnRewardAdEarnedEvent;
     }
 
     private void LoadRewardAd()
@@ -100,10 +116,6 @@ public class Ads : MonoBehaviour
         var nextAdTime = DateTime.Now.AddMinutes(0.1f);
         Cooldown(nextAdTime);
 
-
-
-
-
         if (getRewardButton.interactable == true)
         {
             getRewardButton.interactable = false;
@@ -116,16 +128,16 @@ public class Ads : MonoBehaviour
         CheckCooldown();
         TimeManager.instance.EnergyReward();
 
+        plusPlanePanel.SetActive(false);
+
         if (rewardObtained != null)
         {
             rewardObtained.SetActive(true);
-
         }
         else
         {
             Debug.Log("Missing Panel");
         }
-
     }
 
     private void Cooldown(DateTime adCooldown)
@@ -159,11 +171,7 @@ public class Ads : MonoBehaviour
             {
                 StartCoroutine(DelayAdButton((int)timeLeft));
             }
-            else
-            {
 
-            }
-            
             cooldownNum = (int)timeLeft;
             Debug.Log(timeLeft);
             StartCoroutine(UpdateCooldownTimer(parsedDateTime));
@@ -173,14 +181,17 @@ public class Ads : MonoBehaviour
     private IEnumerator DelayAdButton(int timeLeft)
     {
         yield return new WaitForSeconds(timeLeft);
-        getRewardButton.interactable = true;
+        if (this != null)
+        {
+            getRewardButton.interactable = true;
+        }
     }
 
     private IEnumerator UpdateCooldownTimer(DateTime endTime)
     {
         while (true)
         {
-            if (gameObject == null)
+            if (this == null)
             {
                 Debug.LogWarning("Ads object is null. Exiting coroutine.");
                 yield break;

@@ -5,7 +5,9 @@ using UnityEngine.SceneManagement;
 public class StartGame : MonoBehaviour
 {
     [SerializeField] Button startButton;
-    int planesCount;
+    [SerializeField] Button plusPlaneButton;
+    [SerializeField] GameObject plusPlanePanel;
+     int planesCount;
     // [SerializeField] Button mainMenu;
 
     // Start is called before the first frame update
@@ -19,7 +21,7 @@ public class StartGame : MonoBehaviour
         }
 
         planesCount = TimeManager.instance.energy;
-        Debug.Log(planesCount);
+      // Debug.Log(planesCount);
 
         if (startButton != null)
         {
@@ -37,6 +39,8 @@ public class StartGame : MonoBehaviour
         // {
         //     Debug.LogError("mainMenu button is not assigned");
         // }
+        plusPlaneButton.onClick.AddListener(PlusPlaneButton);
+        plusPlanePanel.SetActive(false);
     }
 
     // Update is called once per frame
@@ -50,6 +54,11 @@ public class StartGame : MonoBehaviour
             //Debug.Log("Start" + planesCount);
             //SceneManager.LoadScene(1);
             TimeManager.instance.SpendEnergy();
+    }
+
+    void PlusPlaneButton()
+    {
+        plusPlanePanel.SetActive(true);
     }
 
 

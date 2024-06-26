@@ -48,6 +48,12 @@ public class AdsContinue : MonoBehaviour
     //    cooldownTimerContinue.gameObject.SetActive(false);
     }
 
+    private void OnDestroy()
+    {
+        StopAllCoroutines();
+        RemoveEventCallbacks();
+    }
+
     private void SetupEventCallbacks()
     {
         _yodoReward.OnAdLoadFailedEvent += OnRewardAdLoadFailedEvent;
@@ -57,6 +63,14 @@ public class AdsContinue : MonoBehaviour
         _yodoReward.OnAdEarnedEvent += OnRewardAdEarnedEvent;
     }
 
+    private void RemoveEventCallbacks()
+    {
+        _yodoReward.OnAdLoadFailedEvent -= OnRewardAdLoadFailedEvent;
+        _yodoReward.OnAdOpenedEvent -= OnRewardAdOpenedEvent;
+        _yodoReward.OnAdOpenFailedEvent -= OnRewardAdOpenFailedEvent;
+        _yodoReward.OnAdClosedEvent -= OnRewardAdClosedEvent;
+        _yodoReward.OnAdEarnedEvent -= OnRewardAdEarnedEvent;
+    }
     private void OnRewardAdLoadedEvent(Yodo1U3dRewardAd ad)
     {
         // Code to be executed when an ad finishes loading.

@@ -33,7 +33,7 @@ public class HP : MonoBehaviour
    public void GotHit(int amount)
     {
         _currentHP -= amount;
-        hpUi.SetText("HP = " + _currentHP);
+        hpUi.SetText(_currentHP.ToString());
 
         if (_currentHP > 0)
         {
