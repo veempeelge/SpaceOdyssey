@@ -8,6 +8,8 @@ public class StartGame : MonoBehaviour
     [SerializeField] Button plusPlaneButton;
     [SerializeField] GameObject plusPlanePanel;
      int planesCount;
+
+    Transition transition;
     // [SerializeField] Button mainMenu;
 
     // Start is called before the first frame update
@@ -54,6 +56,7 @@ public class StartGame : MonoBehaviour
             //Debug.Log("Start" + planesCount);
             //SceneManager.LoadScene(1);
             TimeManager.instance.SpendEnergy();
+            Transition.Instance.EndAnimation();
     }
 
     void PlusPlaneButton()

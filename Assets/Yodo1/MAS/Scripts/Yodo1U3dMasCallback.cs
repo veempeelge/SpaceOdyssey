@@ -327,11 +327,11 @@
         {
             if (_autoPauseGame)
             {
-                Debug.Log(Yodo1U3dMas.TAG + "The feature of auto pause game is enabled, please call `Yodo1U3dMas.SetAutoPauseGame(false)` if you want to disable it");
+              // Debug.Log(Yodo1U3dMas.TAG + "The feature of auto pause game is enabled, please call `Yodo1U3dMas.SetAutoPauseGame(false)` if you want to disable it");
             }
             else
             {
-                Debug.Log(Yodo1U3dMas.TAG + "The feature of auto pause game is disabled, please call `Yodo1U3dMas.SetAutoPauseGame(true)` if you want to enable it");
+              //  Debug.Log(Yodo1U3dMas.TAG + "The feature of auto pause game is disabled, please call `Yodo1U3dMas.SetAutoPauseGame(true)` if you want to enable it");
             }
         }
 
