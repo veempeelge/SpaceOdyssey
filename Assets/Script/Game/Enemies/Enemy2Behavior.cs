@@ -74,7 +74,7 @@ public class Enemy2Behavior : MonoBehaviour
         }
         else if (_position.x > -1 && _position.x < 1)
         {
-            targetX = _positionX[Random.RandomRange(0, _positionX.Length)];
+            targetX = _positionX[Random.Range(0, _positionX.Length)];
         }
       
     }
