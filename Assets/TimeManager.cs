@@ -32,13 +32,16 @@ public class TimeManager : MonoBehaviour
         updateTXT.UpdateTextValue(energy);
     }
 
+    [Obsolete]
     public void SpendEnergy()
     {
         //energy = PlayerPrefs.GetInt("energy", maxEnergy);
         if (energy > 0)
         {
             energy--;
-            SceneManager.LoadSceneAsync(1);
+            Invoke(nameof(StartGame), 4f);
+            ParticleTransition.instance.StartGame();
+
             if (energy < maxEnergy)
             {
                 if (lastEnergySpendDateTime == DateTime.MinValue)
@@ -55,6 +58,10 @@ public class TimeManager : MonoBehaviour
         }
     }
 
+    void StartGame()
+    {
+        SceneManager.LoadSceneAsync(1);
+    }
     public void RecoverEnergyWithTime()
     {
         if (lastEnergySpendDateTime == DateTime.MinValue)

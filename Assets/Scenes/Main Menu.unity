@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18018535, g: 0.22559482, b: 0.30677685, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2325,6 +2325,7 @@ GameObject:
   - component: {fileID: 1391389588}
   - component: {fileID: 1391389587}
   - component: {fileID: 1391389586}
+  - component: {fileID: 1391389589}
   m_Layer: 0
   m_Name: World particle
   m_TagString: Untagged
@@ -2423,7 +2424,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 1
   looping: 1
-  prewarm: 0
+  prewarm: 1
   playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
@@ -2490,7 +2491,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 6.58
+      scalar: 64.42
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -2543,7 +2544,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 538.13
+      scalar: -76.5
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -2661,7 +2662,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 21.55
+      scalar: 106.2
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -3042,7 +3043,7 @@ ParticleSystem:
     angle: 0
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
-    radiusThickness: 0.81
+    radiusThickness: 1
     donutRadius: 8.32
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
@@ -3125,7 +3126,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 446.75
+      value: 464.51
       mode: 0
       spread: 0
       speed:
@@ -3244,7 +3245,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 9.35
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -3683,16 +3684,16 @@ ParticleSystem:
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 0, b: 0.92855215, a: 1}
-        key1: {r: 0, g: 0.61297655, b: 1, a: 1}
-        key2: {r: 0, g: 0, b: 0, a: 0}
+        key1: {r: 0.7205882, g: 0.17127286, b: 0.94851553, a: 1}
+        key2: {r: 0, g: 0.61297655, b: 1, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}
         key5: {r: 0, g: 0, b: 0, a: 0}
         key6: {r: 0, g: 0, b: 0, a: 0}
         key7: {r: 0, g: 0, b: 0, a: 0}
         ctime0: 0
-        ctime1: 65535
-        ctime2: 0
+        ctime1: 18311
+        ctime2: 65535
         ctime3: 0
         ctime4: 0
         ctime5: 0
@@ -3708,7 +3709,7 @@ ParticleSystem:
         atime7: 0
         m_Mode: 0
         m_ColorSpace: 0
-        m_NumColorKeys: 2
+        m_NumColorKeys: 3
         m_NumAlphaKeys: 2
       minGradient:
         serializedVersion: 2
@@ -7139,12 +7140,25 @@ Transform:
   m_GameObject: {fileID: 1391389585}
   serializedVersion: 2
   m_LocalRotation: {x: -0.07880699, y: 0, z: 0, w: 0.9968899}
-  m_LocalPosition: {x: 0, y: 0.1, z: 0.6}
+  m_LocalPosition: {x: 0, y: 166, z: 1045}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -9.04, y: 0, z: 0}
+--- !u!114 &1391389589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1391389585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfe6f9bd58f5de64f80281bce1ca55b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particle: {fileID: 1391389587}
 --- !u!1 &1449403922
 GameObject:
   m_ObjectHideFlags: 0
@@ -7157,7 +7171,6 @@ GameObject:
   - component: {fileID: 1449403927}
   - component: {fileID: 1449403926}
   - component: {fileID: 1449403925}
-  - component: {fileID: 1449403924}
   - component: {fileID: 1449403928}
   m_Layer: 5
   m_Name: Start Game
@@ -7185,27 +7198,6 @@ RectTransform:
   m_AnchoredPosition: {x: 257, y: 1210.87}
   m_SizeDelta: {x: 261, y: 261}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!95 &1449403924
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1449403922}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 64604c60ec7f573489a6f53f47ab2f50, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1449403925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7774,10 +7766,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: AsyncLoading, Assembly-CSharp
-        m_MethodName: LoadLevelBtn
-        m_Mode: 5
+      - m_Target: {fileID: 1391389589}
+        m_TargetAssemblyTypeName: ParticleTransition, Assembly-CSharp
+        m_MethodName: StartGame
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

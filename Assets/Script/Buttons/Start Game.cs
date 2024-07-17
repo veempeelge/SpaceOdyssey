@@ -51,12 +51,13 @@ public class StartGame : MonoBehaviour
 
     }
 
+    [System.Obsolete]
     void StartGameButton()
     {
             //Debug.Log("Start" + planesCount);
             //SceneManager.LoadScene(1);
             TimeManager.instance.SpendEnergy();
-            Transition.Instance.EndAnimation();
+            
     }
 
     void PlusPlaneButton()
