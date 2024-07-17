@@ -34,6 +34,8 @@ public class IntegrationManager : EditorWindow
     float SDKSize = 0f;
     private static string PackageName = string.Empty;
 
+    private static bool importPackageCompleted = false;
+
     static IntegrationManager()
     {
         AssetDatabase.importPackageCompleted += OnImportPackageCompleted;
@@ -50,6 +52,8 @@ public class IntegrationManager : EditorWindow
 #endif
             Yodo1AdNetworkManager.GetInstance().InitAdNetworkConfig();
             Yodo1AdNetworkManager.GetInstance().CheckDependenciesFileByCachedAdNetworks();
+
+            importPackageCompleted = true;
         }
     }
 
@@ -77,7 +81,6 @@ public class IntegrationManager : EditorWindow
             fontSize = 12,
             fontStyle = FontStyle.Bold,
             fixedHeight = 18
-
         };
         contentLabelStyle = new GUIStyle(EditorStyles.label)
         {
@@ -94,6 +97,22 @@ public class IntegrationManager : EditorWindow
             }
         }));
     }
+
+    private void OnInspectorUpdate()
+    {
+        if (importPackageCompleted)
+        {
+            EditorCoroutineRunner.StartEditorCoroutine(LoadPluginData(result =>
+            {
+                if (result)
+                {
+                    Repaint();
+                }
+            }));
+            importPackageCompleted = false;
+        }
+    }
+
     IEnumerator LoadPluginData(Action<bool> callback)
     {
         Yodo1AdNetworkManager.GetInstance().InitAdNetworkConfig();
@@ -141,8 +160,6 @@ public class IntegrationManager : EditorWindow
     {
         var PackageComponents = GetUpgradeDownloadUrl().Split(new[] { ".unitypackage" }, StringSplitOptions.None);
         PackageName = PackageComponents[0].Substring(PackageComponents[0].LastIndexOf("/") + 1);
-
-
         if (PackageName.Contains("-"))
         {
             var components = PackageName.Split(new[] { "-beta" }, StringSplitOptions.None);
@@ -233,7 +250,6 @@ public class IntegrationManager : EditorWindow
     }
     private void RemoveAdNetwork(Yodo1AdNetwork adNetwork)
     {
-
         if (platformTabSelected == 0)
         {
             if (androidCachedData.networks.Count >= 1)
@@ -295,7 +311,6 @@ public class IntegrationManager : EditorWindow
     }
     private void InstallAdNetwork(Yodo1AdNetwork adNetwork)
     {
-
         if (platformTabSelected == 0)
         {
             androidCachedData.networks.Add(adNetwork.name);
@@ -332,7 +347,6 @@ public class IntegrationManager : EditorWindow
     }
     void OnGUI()
     {
-
         GUILayout.Space(10);
         DrawPluginDetails();
         GUIUtility.ExitGUI();
@@ -347,7 +361,6 @@ public class IntegrationManager : EditorWindow
             DrawHeaders();
             DrawPluginDetailRow("Standard", CurrentAdNetworkVersion(), LatestAdNetworkVersion());
         }
-
 
         GUILayout.Space(5);
         GUILayout.EndHorizontal();
@@ -378,7 +391,7 @@ public class IntegrationManager : EditorWindow
                         }
                         Yodo1AdNetwork adNetwork = new Yodo1AdNetwork();
                         adNetwork.name = "Amazon";
-                        adNetwork.version = "9.8.4";
+                        adNetwork.version = "9.10.0";
                         DrawNetworkDetailRow(adNetwork);
                     }
                 }
@@ -392,7 +405,7 @@ public class IntegrationManager : EditorWindow
                         }
                         Yodo1AdNetwork adNetwork = new Yodo1AdNetwork();
                         adNetwork.name = "Amazon";
-                        adNetwork.version = "4.7.5";
+                        adNetwork.version = "4.9.5";
                         DrawNetworkDetailRow(adNetwork);
                     }
                 }

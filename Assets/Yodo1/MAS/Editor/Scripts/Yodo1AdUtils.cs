@@ -49,10 +49,7 @@
         public static bool IsGooglePlayVersion()
         {
             bool isGooglePlayVersion = false;
-#if UNITY_IOS || UNITY_IPHONE
-            return isGooglePlayVersion;
-#endif
-
+#if UNITY_ANDROID
             string dependencyFilePath = DEPENDENCIES_PATH_ANDROID;
 
             XmlReaderSettings settings = new XmlReaderSettings();
@@ -91,80 +88,21 @@
                 }
             }
             reader.Close();
-
+#endif
             return isGooglePlayVersion;
         }
 
         public static bool IsAppLovinValid()
         {
-            bool ret = false;
-            string dependencyFilePath = string.Empty;
-#if UNITY_ANDROID
-            dependencyFilePath = DEPENDENCIES_PATH_ANDROID;
-#elif UNITY_IOS || UNITY_IPHONE
-            dependencyFilePath = DEPENDENCIES_PATH_IOS;
-#endif
-            if (string.IsNullOrEmpty(dependencyFilePath))
-            {
-                return ret;
-            }
-
-            XmlReaderSettings settings = new XmlReaderSettings();
-            settings.IgnoreComments = true;
-            XmlReader reader = XmlReader.Create(dependencyFilePath, settings);
-
-            XmlDocument xmlReadDoc = new XmlDocument();
-            xmlReadDoc.Load(dependencyFilePath);
-            XmlNode dependenciesRead = xmlReadDoc.SelectSingleNode("dependencies");
-
-            XmlNodeList nodeList = null;
-#if UNITY_ANDROID
-            XmlNode androidPackagesRead = dependenciesRead.SelectSingleNode("androidPackages");
-            nodeList = androidPackagesRead.SelectNodes("androidPackage");
-#endif
-#if UNITY_IOS || UNITY_IPHONE
-            XmlNode iosPodsRead = dependenciesRead.SelectSingleNode("iosPods");
-            nodeList = iosPodsRead.SelectNodes("iosPod");
-#endif
-            if (nodeList != null && nodeList.Count > 0)
-            {
-                try
-                {
-                    foreach (XmlNode node in nodeList)
-                    {
-#if UNITY_ANDROID
-                        string name = ((XmlElement)node).GetAttribute("spec").ToString();
-                        if (string.IsNullOrEmpty(name))
-                        {
-                            continue;
-                        }
-                        if (name.Contains("com.yodo1.mas.mediation:applovin") || name.Contains("com.yodo1.mas:full") || name.Contains("com.yodo1.mas:lite"))
-#endif
-#if UNITY_IOS || UNITY_IPHONE
-                        string name = ((XmlElement)node).GetAttribute("name").ToString();
-                        if (string.IsNullOrEmpty(name))
-                        {
-                            continue;
-                        }
-                        if (name.Contains("Yodo1MasMediationApplovin") || name.Contains("Yodo1MasFull") || name.Contains("Yodo1MasLite"))
-#endif
-                        {
-                            ret = true;
-                            break;
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Debug.Log(e);
-                }
-            }
-            reader.Close();
-
-            return ret;
+            return IsValidWithNetwork("Applovin");
         }
 
         public static bool IsAdMobValid()
+        {
+            return IsValidWithNetwork("AdMob");
+        }
+
+        public static bool IsValidWithNetwork(string network)
         {
             bool ret = false;
             string dependencyFilePath = string.Empty;
@@ -207,7 +145,8 @@
                         {
                             continue;
                         }
-                        if (name.Contains("com.yodo1.mas.mediation:admob") || name.Contains("com.yodo1.mas:full") || name.Contains("com.yodo1.mas:lite"))
+                        string networkName = string.Format("com.yodo1.mas.mediation:{0}", network);
+                        if (name.ToLower().Contains(networkName.ToLower()) || name.Contains("com.yodo1.mas:full") || name.Contains("com.yodo1.mas:lite"))
 #endif
 #if UNITY_IOS || UNITY_IPHONE
                         string name = ((XmlElement)node).GetAttribute("name").ToString();
@@ -215,7 +154,8 @@
                         {
                             continue;
                         }
-                        if (name.Contains("Yodo1MasMediationAdMob") || name.Contains("Yodo1MasFull") || name.Contains("Yodo1MasLite"))
+                        string networkName = string.Format("Yodo1MasMediation{0}", network);
+                        if (name.ToLower().Contains(networkName.ToLower()) || name.Contains("Yodo1MasFull") || name.Contains("Yodo1MasLite"))
 #endif
                         {
                             ret = true;
@@ -232,7 +172,6 @@
 
             return ret;
         }
-
 
     }
 

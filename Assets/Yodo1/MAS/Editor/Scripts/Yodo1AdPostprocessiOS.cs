@@ -45,7 +45,7 @@ namespace Yodo1.MAS
             }
         }
 
-        #region SkAdNetworksInfo
+#region SkAdNetworksInfo
 
         private static Yodo1SkAdNetworkData GetSkAdNetworkData()
         {
@@ -117,7 +117,7 @@ namespace Yodo1.MAS
             return mSKAdNetworkIDs;
         }
 
-        #endregion
+#endregion
 
         private static void UpdateIOSPlist(string path, Yodo1AdSettings settings)
         {
@@ -461,9 +461,31 @@ namespace Yodo1.MAS
             {
                 var dynamicLibraryPathsToEmbed = new List<string>();
 
-                dynamicLibraryPathsToEmbed.Add(Path.Combine("Pods/", "Yodo1MasMediationApplovin/Yodo1MasMediationApplovin/Lib/DTBiOSSDK.xcframework"));
-                dynamicLibraryPathsToEmbed.Add(Path.Combine("Pods/", "OMSDK_Appodeal/OMSDK_Appodeal.xcframework"));
-                dynamicLibraryPathsToEmbed.Add(Path.Combine("Pods/", "Fyber_Marketplace_SDK/IASDKCore/IASDKCore.xcframework/ios-arm64/IASDKCore.framework"));
+                if (Yodo1AdUtils.IsAppLovinValid())
+                {
+                    dynamicLibraryPathsToEmbed.Add(Path.Combine("Pods/", "AppLovinSDK/applovin-ios-sdk-12.5.0/AppLovinSDK.xcframework"));
+                    // Amazon
+                    dynamicLibraryPathsToEmbed.Add(Path.Combine("Pods/", "Yodo1MasMediationApplovin/Yodo1MasMediationApplovin/Lib/DTBiOSSDK.xcframework"));
+                }
+
+                // BidMachine
+                if (Yodo1AdUtils.IsValidWithNetwork("BidMachine"))
+                {
+                    dynamicLibraryPathsToEmbed.Add(Path.Combine("Pods/", "OMSDK_Appodeal/OMSDK_Appodeal.xcframework"));
+                }
+
+                // Fyber
+                if (Yodo1AdUtils.IsValidWithNetwork("Fyber"))
+                {
+                    dynamicLibraryPathsToEmbed.Add(Path.Combine("Pods/", "Fyber_Marketplace_SDK/IASDKCore/IASDKCore.xcframework"));
+                }
+
+                // InMobi
+                if (Yodo1AdUtils.IsValidWithNetwork("InMobi"))
+                {
+                    dynamicLibraryPathsToEmbed.Add(Path.Combine("Pods/", "InMobiSDK/InMobiSDK.xcframework"));
+                }
+
                 return dynamicLibraryPathsToEmbed;
             }
         }
@@ -501,7 +523,7 @@ namespace Yodo1.MAS
                 "\tend\n" +
                 "end\n";
 
-            Debug.Log("=================== " + path + "/Podfile");
+            //Debug.Log("=================== " + path + "/Podfile");
 
             Yodo1AdFileClass app = new Yodo1AdFileClass(path + "/Podfile");
             app.WriteBelow(topTag, installer);

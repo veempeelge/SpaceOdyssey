@@ -6,6 +6,7 @@
     using System.IO;
     using System.Net;
     using System.Text;
+    using UnityEngine;
     using UnityEngine.Networking;
 
     public class Yodo1Net
@@ -93,6 +94,7 @@
             catch (WebException e)
             {
                 //Debug.LogWarning(Yodo1U3dMas.TAG + "HttpPost Exception.Status - " + e.Status + ", please check your bundle id or package name.");
+                e.StackTrace.ToString();
                 return string.Empty;
             }
         }
