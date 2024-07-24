@@ -5,9 +5,12 @@ using UnityEngine;
 public class ParticleTransition : MonoBehaviour
 {
     public static ParticleTransition instance;
-    [SerializeField] ParticleSystem particle;
-    // Start is called before the first frame update
-    void Start()
+
+    // Reference to the ParticleSystem component
+    private ParticleSystem particleSystem;
+
+    // Awake is called when the script instance is being loaded
+    void Awake()
     {
         if (instance == null)
         {
@@ -18,22 +21,39 @@ public class ParticleTransition : MonoBehaviour
             Destroy(gameObject);
         }
 
-        DontDestroyOnLoad(gameObject.transform);
+    
+        particleSystem = GetComponent<ParticleSystem>();
+
+       
+        DontDestroyOnLoad(gameObject);
     }
 
-    // Update is called once per frame
-    void Update()
+    // Start is called before the first frame update
+    void Start()
     {
         
     }
 
-    [System.Obsolete]
+
+    void Update()
+    {
+
+    }
+
+   
     public void StartGame()
     {
-        particle.startSpeed = -400.6f;
-        particle.startSize = 84.6f;
-        particle.emissionRate = 30;
-        particle.loop = false;
-
+       
+        if (particleSystem != null)
+        {
+            particleSystem.startSpeed = 538.13f;
+            particleSystem.startSize = 4.9f;
+            particleSystem.startLifetime = 6.58f;
+            particleSystem.emissionRate = 10f;
+        }
+        else
+        {
+            Debug.LogWarning("Particle system reference not set.");
+        }
     }
 }

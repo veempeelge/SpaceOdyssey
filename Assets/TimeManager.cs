@@ -17,6 +17,7 @@ public class TimeManager : MonoBehaviour
     UpdateText updateTXT;
     public TMP_Text timerText; // Add this for the timer text
 
+
     private void Awake()
     {
         instance = this;
@@ -39,8 +40,8 @@ public class TimeManager : MonoBehaviour
         if (energy > 0)
         {
             energy--;
-            Invoke(nameof(StartGame), 4f);
-            ParticleTransition.instance.StartGame();
+            StartGame();
+            // ParticleTransition.instance.StartGame();
 
             if (energy < maxEnergy)
             {
@@ -48,6 +49,7 @@ public class TimeManager : MonoBehaviour
                 {
                     lastEnergySpendDateTime = DateTime.Now; // Only reset if not already set
                 }
+               
             }
             SaveData();
             // TODO: PLAY GAME
@@ -56,6 +58,8 @@ public class TimeManager : MonoBehaviour
         {
             Debug.Log("Not enough energy to spend");
         }
+
+        
     }
 
     void StartGame()

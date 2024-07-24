@@ -10,9 +10,11 @@ public class StartGame : MonoBehaviour
      int planesCount;
 
     Transition transition;
+
     // [SerializeField] Button mainMenu;
 
     // Start is called before the first frame update
+    [System.Obsolete]
     void Start()
     {
         // Ensure TimeManager instance is not null
