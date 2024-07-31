@@ -43,13 +43,25 @@ public class ParticleTransition : MonoBehaviour
    
     public void StartGame()
     {
-       
         if (particleSystem != null)
         {
-            particleSystem.startSpeed = 538.13f;
-            particleSystem.startSize = 4.9f;
-            particleSystem.startLifetime = 6.58f;
-            particleSystem.emissionRate = 10f;
+            Debug.Log("Particle system found.");
+            // Ensure VelocityOverLifetime module is enabled
+            var velocityOverLifetime = particleSystem.velocityOverLifetime;
+            if (velocityOverLifetime.enabled)
+            {
+                Debug.Log($"Current Speed Modifier Multiplier: {velocityOverLifetime.speedModifierMultiplier}");
+
+                // Modify the speedModifierMultiplier
+                velocityOverLifetime.speedModifierMultiplier = 3f;
+
+                // Log after changing
+                Debug.Log($"New Speed Modifier Multiplier: {velocityOverLifetime.speedModifierMultiplier}");
+            }
+            else
+            {
+                Debug.LogWarning("VelocityOverLifetime module is not enabled.");
+            }
         }
         else
         {

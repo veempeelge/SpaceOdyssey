@@ -64,6 +64,7 @@ public class TimeManager : MonoBehaviour
 
     void StartGame()
     {
+        ParticleTransition.instance.StartGame();
         SceneManager.LoadSceneAsync(1);
     }
     public void RecoverEnergyWithTime()
