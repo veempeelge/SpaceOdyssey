@@ -7168,9 +7168,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aaef020530705947a2355e84833f56d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _showAdButton: {fileID: 1116108923}
-  _androidAdUnitId: Rewarded_Android
-  _iOSAdUnitId: Rewarded_iOS
 --- !u!1 &1275342389
 GameObject:
   m_ObjectHideFlags: 0
@@ -7308,7 +7305,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1321411944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13175,8 +13172,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Play Ads
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 56c9b5db0e2d35d46863ed58c40bb36b, type: 2}
-  m_sharedMaterial: {fileID: 858655055742934629, guid: 56c9b5db0e2d35d46863ed58c40bb36b, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4c3f4c08853ba9c41b4f059611375798, type: 2}
+  m_sharedMaterial: {fileID: 7477706969650617574, guid: 4c3f4c08853ba9c41b4f059611375798, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -13357,8 +13354,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 941a39a5a72a14443a7aaecd1165ba47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _androidAdUnitId: Interstitial_Android
-  _iOsAdUnitId: Interstitial_iOS
 --- !u!114 &2077975154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13371,9 +13366,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4654c09b92926384dbe6c8072f01edd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _androidGameId: 5627741
-  _iOSGameId: 5627740
-  _testMode: 1
 --- !u!4 &2077975155
 Transform:
   m_ObjectHideFlags: 0
@@ -13448,8 +13440,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 00:00
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 56c9b5db0e2d35d46863ed58c40bb36b, type: 2}
-  m_sharedMaterial: {fileID: 858655055742934629, guid: 56c9b5db0e2d35d46863ed58c40bb36b, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4c3f4c08853ba9c41b4f059611375798, type: 2}
+  m_sharedMaterial: {fileID: 7477706969650617574, guid: 4c3f4c08853ba9c41b4f059611375798, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
