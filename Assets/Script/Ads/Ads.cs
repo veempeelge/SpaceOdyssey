@@ -114,6 +114,7 @@ public class Ads : MonoBehaviour
     private void OnRewardAdEarnedEvent(Yodo1U3dRewardAd ad)
     {
         var nextAdTime = DateTime.Now.AddMinutes(5);
+        //.Instance.StartCooldownTimer(nextAdTime, cooldownTimer, getRewardButton);
         Cooldown(nextAdTime);
 
         if (getRewardButton.interactable == true)
@@ -191,24 +192,24 @@ public class Ads : MonoBehaviour
     {
         while (true)
         {
-            if (cooldownTimer == null || !gameObject.activeInHierarchy)
-            {
-                yield break; // Exit coroutine if object is inactive or if UI is null
-            }
-
             var timeLeft = endTime - DateTime.Now;
             if (timeLeft.TotalSeconds <= 0)
             {
-                cooldownTimer.SetText("00:00:00");
-                getRewardButton.interactable = true; // Re-enable the button when cooldown is over
-                yield break; // Exit coroutine
+                if (cooldownTimer != null)
+                {
+                    cooldownTimer.SetText("00:00:00");
+                }
+                getRewardButton.interactable = true;
+                yield break;
             }
 
-            // Update the timer text
-            cooldownTimer.SetText(timeLeft.ToString(@"hh\:mm\:ss"));
+            if (cooldownTimer != null)
+            {
+                cooldownTimer.SetText(timeLeft.ToString(@"hh\:mm\:ss"));
+            }
 
-            // Wait for 1 second before updating again
             yield return new WaitForSeconds(1);
         }
     }
+
 }
